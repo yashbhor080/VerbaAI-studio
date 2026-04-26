@@ -1,0 +1,37 @@
+{
+    "Travel": [
+        "Describe your dream vacation destination.",
+        "Talk about a memorable trip you once took.",
+        "How do you feel about solo traveling vs group traveling?",
+        "What are the most important items to pack for a trip?",
+        "Describe a beautiful place you've visited."
+    ],
+    "Work": [
+        "What are the qualities of a good leader?",
+        "Describe your ideal work environment.",
+        "Talk about a challenge you faced at work and how you solved it.",
+        "How do you stay productive during a long workday?",
+        "What is the most important skill for a career in 2024?"
+    ],
+    "Education": [
+        "Is online learning more effective than classroom learning?",
+        "Describe a teacher who inspired you.",
+        "What is one subject you wish everyone would study?",
+        "Should higher education be free for everyone?",
+        "What are the benefits of learning a second language?"
+    ],
+    "Daily": [
+        "What is your morning routine?",
+        "Talk about your favorite hobby and why you enjoy it.",
+        "How do you manage stress in your daily life?",
+        "What is your favorite meal to cook or eat?",
+        "How do you balance work and personal life?"
+    ],
+    "Technology": [
+        "How has AI changed the way we work?",
+        "Describe a gadget you cannot live without.",
+        "What are the pros and cons of social media?",
+        "Do you think robots will replace humans in most jobs?",
+        "How has the internet changed the way we communicate?"
+    ]
+}

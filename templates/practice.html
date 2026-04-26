@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Practice Studio{% endblock %}
+
+{% block content %}
+<div class="practice-container slide-up">
+
+    <!-- ═══ SETUP CARD ════════════════════════════════════════════════════ -->
+    <div id="domain-selection" class="glass-card" style="max-width:900px;margin:0 auto;">
+        <h2 style="margin-top:0;">🎙️ Configure Your Session</h2>
+        <p style="opacity:0.6;margin-bottom:2rem;">Choose your domain, language and duration — then enter the studio.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;">
+
+            <!-- 1. Domain -->
+            <div>
+                <label style="display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;opacity:0.7;font-weight:700;">1. Domain</label>
+                <div class="domain-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                    <button class="domain-btn" data-domain="Travel">🌍 Travel</button>
+                    <button class="domain-btn" data-domain="Work">💼 Work</button>
+                    <button class="domain-btn" data-domain="Education">🎓 Education</button>
+                    <button class="domain-btn" data-domain="Daily">🏠 Daily</button>
+                    <button class="domain-btn" data-domain="Technology" style="grid-column:1/-1;">💻 Technology</button>
+                </div>
+            </div>
+
+            <!-- 2. Language -->
+            <div>
+                <label style="display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;opacity:0.7;font-weight:700;">2. Language</label>
+                <select id="language-select" style="width:100%;padding:0.9rem 1rem;background:#1e293b;color:#fff;border:2px solid var(--accent);border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;outline:none;appearance:auto;">
+                    <option value="en-US">🇺🇸 English (US)</option>
+                    <option value="en-GB">🇬🇧 English (UK)</option>
+                    <option value="hi-IN">🇮🇳 Hindi (हिंदी)</option>
+                    <option value="es-ES">🇪🇸 Spanish (Español)</option>
+                    <option value="fr-FR">🇫🇷 French (Français)</option>
+                    <option value="de-DE">🇩🇪 German (Deutsch)</option>
+                    <option value="ja-JP">🇯🇵 Japanese (日本語)</option>
+                </select>
+                <p style="font-size:0.7rem;margin-top:0.8rem;opacity:0.5;">Verba adapts coaching to your language.</p>
+            </div>
+
+            <!-- 3. Duration -->
+            <div>
+                <label style="display:block;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;opacity:0.7;font-weight:700;">3. Duration</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                    <button class="duration-btn active" data-mins="1">⏱ 1 Min</button>
+                    <button class="duration-btn" data-mins="2">⏱ 2 Min</button>
+                    <button class="duration-btn" data-mins="5">⏱ 5 Min</button>
+                    <button class="duration-btn" data-mins="0">∞ Free</button>
+                </div>
+                <p style="font-size:0.7rem;margin-top:0.8rem;opacity:0.5;">Auto-stops when time is up.</p>
+            </div>
+        </div>
+
+        <button id="setup-confirm-btn" class="btn primary-btn" style="width:100%;margin-top:2rem;padding:1.2rem;font-size:1.1rem;letter-spacing:0.5px;">
+            Confirm Setup &amp; Enter Studio 🎤
+        </button>
+    </div>
+
+    <!-- ═══ PRACTICE AREA ══════════════════════════════════════════════════ -->
+    <div id="practice-area" style="display:none;">
+
+        <div class="practice-layout" style="display:grid;grid-template-columns:1fr 380px;gap:2rem;align-items:start;margin-top:1.5rem;">
+
+            <!-- Left: Core Practice UI -->
+            <div class="practice-main">
+
+                <!-- Topic Card -->
+                <div class="topic-card glass-card" id="topic-container">
+                    <span class="topic-label" id="topic-status">Spin to get a topic</span>
+                    <h2 id="topic-text" style="transition:opacity 0.3s ease;margin:1rem 0 0;">Select a domain &amp; spin the wheel!</h2>
+                </div>
+
+                <!-- Waveform -->
+                <div style="width:100%;height:60px;margin:1.5rem 0;border-radius:15px;background:rgba(0,0,0,0.15);border:1px solid var(--border);overflow:hidden;position:relative;">
+                    <canvas id="waveform-canvas" style="width:100%;height:100%;display:block;"></canvas>
+                    <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;opacity:0.25;pointer-events:none;font-weight:800;">Reactive AI Wave</span>
+                </div>
+
+                <!-- Combo Meter -->
+                <div id="combo-container" style="margin-bottom:1.5rem;display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;font-size:0.75rem;font-weight:800;text-transform:uppercase;color:var(--accent);">
+                        <span>🔥 Momentum Combo</span>
+                        <span id="combo-text">0%</span>
+                    </div>
+                    <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+                        <div id="combo-bar" style="width:0%;height:100%;background:linear-gradient(to right,var(--accent),#facc15);transition:width 0.3s ease;"></div>
+                    </div>
+                </div>
+
+                <!-- Spin Wheel -->
+                <div class="wheel-section" style="display:flex;justify-content:center;margin:2rem 0;">
+                    <div class="wheel-container" style="display:flex;flex-direction:column;align-items:center;">
+                        <div style="font-size:2rem;color:var(--accent);margin-bottom:-12px;z-index:1;">▼</div>
+                        <div class="wheel" id="wheel-element">
+                            <div class="wheel-center"></div>
+                        </div>
+                        <button id="spin-btn" class="btn primary-btn" style="margin-top:1rem;">🎲 Spin for Topic</button>
+                    </div>
+                </div>
+
+                <!-- Timer & Controls -->
+                <div class="glass-card" style="text-align:center;padding:2rem;">
+                    <div class="timer" id="timer-display" style="font-size:3rem;font-weight:700;font-family:monospace;color:var(--accent);">00:00</div>
+                    <div style="margin-top:1.2rem;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
+                        <button id="start-btn" class="btn primary-btn">▶ Start Practice</button>
+                        <button id="skip-prep-btn" class="btn secondary" onclick="window.skipPrep()" style="display:none;">Skip Prep 🚀</button>
+                        <button id="end-btn" class="btn secondary" onclick="window.endSessionManual()" style="display:none;">■ End Session</button>
+                    </div>
+                </div>
+
+                <!-- Live Transcript -->
+                <div id="transcript-section" class="glass-card" style="display:none;margin-top:1.5rem;padding:1.5rem;">
+                    <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;">
+                        <span style="width:8px;height:8px;background:#ff4757;border-radius:50%;display:inline-block;animation:pulse 1.2s infinite;"></span>
+                        <h4 style="margin:0;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;">Live Transcript</h4>
+                    </div>
+                    <div id="live-transcript" style="min-height:60px;max-height:140px;overflow-y:auto;font-style:italic;opacity:0.8;line-height:1.6;">
+                        Start speaking to see your transcript...
+                    </div>
+                    <div style="margin-top:1rem;font-size:0.8rem;font-weight:bold;color:var(--accent);display:flex;justify-content:space-between;">
+                        <span>Words: <span id="live-word-count">0</span></span>
+                        <span>Speed: <span id="live-wpm">0</span> WPM</span>
+                        <span id="fluency-badge" style="padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;text-transform:uppercase;background:var(--border);">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Verba AI Panel -->
+            <div class="ai-assistant-panel glass-card" style="position:sticky;top:2rem;">
+
+                <!-- Verba Avatar & Bubble -->
+                <div id="verba-persona-box" style="display:flex;flex-direction:column;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+                    <div id="verba-avatar" style="font-size:3rem;background:var(--accent);color:var(--bg);width:80px;height:80px;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 10px 25px rgba(0,0,0,0.25);flex-shrink:0;">🤖</div>
+                    <div style="background:rgba(255,255,255,0.05);border:2px solid var(--accent);padding:1rem;border-radius:15px;width:100%;box-sizing:border-box;">
+                        <p id="verba-text" style="margin:0;font-size:0.9rem;font-weight:600;text-align:center;line-height:1.5;">Hey! I'm Verba. Ready to start practicing?</p>
+                    </div>
+                </div>
+
+                <!-- AI Status -->
+                <div id="ai-status" style="font-size:0.8rem;color:var(--accent);display:flex;align-items:center;gap:0.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+                    <span class="status-dot"></span>
+                    <span>Ready to analyze...</span>
+                </div>
+
+                <!-- Live Sentiment -->
+                <div style="margin-top:1rem;padding:0.8rem;background:rgba(255,255,255,0.03);border-radius:12px;display:flex;align-items:center;gap:1rem;border:1px solid var(--border);">
+                    <div id="sentiment-emoji" style="font-size:1.8rem;">😐</div>
+                    <div>
+                        <p style="margin:0;font-size:0.6rem;text-transform:uppercase;opacity:0.5;letter-spacing:1px;font-weight:800;">Live Sentiment</p>
+                        <p id="sentiment-text" style="margin:0;font-size:0.9rem;font-weight:700;color:var(--accent);">Neutral / Steady</p>
+                    </div>
+                </div>
+
+                <!-- AI Message Feed -->
+                <div id="ai-messages" style="margin-top:1rem;display:flex;flex-direction:column;gap:0.6rem;overflow-y:auto;max-height:220px;border-top:1px solid var(--border);padding-top:1rem;"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerbaAI Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="app-container">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo" id="app-logo" style="padding: 2.5rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                <div class="logo-icon-container" style="position: relative; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #818cf8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);">
+                    <span class="logo-inner-icon" style="font-weight: 800; font-size: 1.4rem; color: #fff;">V</span>
+                    <span class="logo-ai-wave"></span>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; line-height: 1;">Verba<span style="color: var(--accent);">AI</span></span>
+                    <span style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; margin-top: 4px;">Studio</span>
+                </div>
+                <span id="easter-egg-btn" title="Take a Break" style="cursor:pointer; opacity:0; transition:opacity 0.3s; font-size:1rem; margin-left: auto;">🚀</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                    <span class="nav-icon">🏠</span> Home
+                </a>
+                <a href="/practice" class="nav-link {% if request.path == '/practice' %}active{% endif %}">
+                    <span class="nav-icon">🎤</span> Practice
+                </a>
+                <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>VerbaAI v2.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Topbar Header -->
+            <header class="topbar">
+                <div class="page-header">
+                    <h2>{% block title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div class="topbar-actions">
+                    <button class="theme-toggle" id="voice-toggle-btn" title="Toggle Voice Feedback">🔊 Voice On</button>
+                    <button class="theme-toggle" id="theme-btn">Switch Theme</button>
+                    <div class="user-profile">
+                        <div class="avatar">👨‍💻</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Page Content -->
+            <main class="content-wrapper">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Phase 13: UI Sound Effects -->
+    <audio id="sound-reveal" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+    <audio id="sound-start" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sound-success" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+    <audio id="sound-levelup" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
+
+    <!-- Phase 4: Session Report Modal -->
+    <div class="report-overlay" id="report-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:2000; justify-content:center; align-items:center;">
+        <div class="report-card glass-card" style="max-width:500px; width:90%; padding:2.5rem; text-align:center;">
+            <h2 style="margin-top:0; color:var(--accent);">Session Summary</h2>
+            <div class="report-stats" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin:2rem 0;">
+                <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:15px;">
+                    <span id="report-words" style="display:block; font-size:1.5rem; font-weight:800; color:var(--accent);">0</span>
+                    <span style="font-size:0.7rem; opacity:0.7; text-transform:uppercase;">Words</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:15px;">
+                    <span id="report-wpm" style="display:block; font-size:1.5rem; font-weight:800; color:var(--accent);">0</span>
+                    <span style="font-size:0.7rem; opacity:0.7; text-transform:uppercase;">Avg. WPM</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:15px;">
+                    <span id="report-fillers" style="display:block; font-size:1.5rem; font-weight:800; color:#ff4757;">0</span>
+                    <span style="font-size:0.7rem; opacity:0.7; text-transform:uppercase;">Fillers</span>
+                </div>
+            </div>
+            <div class="report-feedback" style="background:rgba(56, 189, 248, 0.1); padding:1.5rem; border-radius:12px; border-left:4px solid var(--accent); text-align:left; margin-bottom:1.5rem;">
+                <h4 style="margin:0 0 0.5rem 0; font-size:0.9rem; text-transform:uppercase; color:var(--accent);">AI Suggestions</h4>
+                <p id="report-suggestion" style="margin:0; font-size:1rem; line-height:1.5; font-style:italic;">Analyzing your session...</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <button class="btn primary-btn" onclick="window.closeReport()" style="width:100%;">Return to Dashboard</button>
+                <button class="btn secondary" onclick="window.downloadSession()" style="width:100%; opacity: 0.8;">📥 Download Session Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 6: Dynamic Feedback System -->
+    <div class="feedback-toast" id="feedback-toast">
+        <div class="feedback-icon" id="feedback-icon">🌟</div>
+        <div class="feedback-content">
+            <h3 id="feedback-title">Great Job!</h3>
+            <p id="feedback-message">You earned 50 XP</p>
+        </div>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
