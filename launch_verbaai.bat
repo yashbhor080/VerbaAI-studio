@@ -1,0 +1,26 @@
+@echo off
+title VerbaAI Studio - Launcher
+color 0A
+
+echo.
+echo  ██╗   ██╗███████╗██████╗ ██████╗  █████╗  █████╗ ██╗
+echo  ██║   ██║██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║
+echo  ██║   ██║█████╗  ██████╔╝██████╔╝███████║███████║██║
+echo  ╚██╗ ██╔╝██╔══╝  ██╔══██╗██╔══██╗██╔══██║██╔══██║██║
+echo   ╚████╔╝ ███████╗██║  ██║██████╔╝██║  ██║██║  ██║██║
+echo    ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝
+echo.
+echo  Starting VerbaAI Studio...
+echo  Visit: http://127.0.0.1:5000
+echo  Press CTRL+C to stop the server.
+echo.
+
+cd /d "c:\Users\yashb\OneDrive\Desktop\VerbaAI"
+
+:: Open browser after a short delay
+start /b cmd /c "timeout /t 2 >nul && start http://127.0.0.1:5000"
+
+:: Start Flask server
+python app.py
+
+pause
